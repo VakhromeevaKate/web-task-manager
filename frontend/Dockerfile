@@ -1,7 +1,7 @@
 # ---------- Stage 1: сборка ----------
     FROM node:20-alpine AS build
     
-    WORKDIR /app
+    WORKDIR /
     
     # Сначала зависимости — кэшируются, пока не меняется package.json
     COPY package*.json ./
@@ -24,7 +24,7 @@
     COPY nginx.conf /etc/nginx/conf.d/default.conf
     
     # Статика из build-стадии
-    COPY --from=build /app/dist /usr/share/nginx/html
+    COPY --from=build /dist /usr/share/nginx/html
     
     EXPOSE 80
     
