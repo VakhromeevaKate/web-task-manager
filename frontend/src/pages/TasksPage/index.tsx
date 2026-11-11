@@ -9,7 +9,7 @@ import { TaskForm } from "../../components/TaskForm";
 import { Spinner } from "../../components/Spinner";
 import { EmptyState } from "../../components/EmptyState";
 import { ErrorBanner } from "../../components/ErrorBanner";
-import styles from "./TasksPage.module.css";
+import styles from "./index.module.css";
 
 type ModalState =
   | { type: "none" }
@@ -104,9 +104,11 @@ export function TasksPage() {
   return (
     <AppLayout
       actions={
-        <Button onClick={() => setModal({ type: "add" })}>
-          + Новая задача
-        </Button>
+        <div className={styles.newTaskButton}>
+          <Button onClick={() => setModal({ type: "add" })}>
+            + Новая задача
+          </Button>
+        </div>
       }
     >
       <div className={styles.stats}>
