@@ -7,3 +7,9 @@
 
 Команда для запуска в контейнере:
 `docker compose up --build`
+
+# Только development-стек
+docker compose --profile dev up --build frontend-dev
+
+# Только production-стек
+docker compose --profile prod up --build frontend

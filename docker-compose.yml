@@ -32,6 +32,26 @@ services:
       - "80:80"
     depends_on:
       - api
+    profiles: ["prod"]        # поднимается только с --profile prod
+
+  frontend-dev:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5173:5173"
+    volumes:
+      # Монтируем исходники — изменения на хосте сразу видны в контейнере
+      - ./frontend:/app
+      # Анонимный том «закрывает» node_modules контейнера,
+      # чтобы хост-папка node_modules его не перезаписала
+      - /app/node_modules
+    environment:
+      # В dev-режиме фронтенд зовёт API напрямую или через Vite-proxy
+      - VITE_API_URL=/api
+    depends_on:
+      - api
+    profiles: ["dev"]
 
 volumes:
   postgres_data:

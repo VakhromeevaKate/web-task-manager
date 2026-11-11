@@ -38,7 +38,13 @@
   .checkbox[aria-pressed="true"] { background: #10b981; border-color: #10b981; }
   .checkbox svg { width: 14px; height: 14px; }
   
-  .content { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+  .content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px; }
   
   .title {
     font-size: 15px;
