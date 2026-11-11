@@ -1,0 +1,25 @@
+  .empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 20px;
+    text-align: center;
+  }
+  
+  .icon { color: #d1d5db; margin-bottom: 16px; }
+  .icon svg { width: 56px; height: 56px; }
+  
+  .title {
+    font-size: 17px;
+    font-weight: 600;
+    margin: 0 0 6px;
+  }
+  
+  .description {
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0 0 16px;
+    max-width: 340px;
+  }
+  
+  .action { margin-top: 8px; }
