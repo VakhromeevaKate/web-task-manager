@@ -33,7 +33,7 @@ export function TaskCard({ task, onToggle, onEdit, onDelete }: TaskCardProps) {
       </button>
 
       <div className={styles.content}>
-        <h3 className={styles.title}>{task.title}</h3>
+        <div className={styles.title}>{task.title}</div>
         <div className={styles.meta}>
           <span className={`${styles.priority} ${styles[`priority${task.priority}`]}`}>
             {PRIORITY_LABELS[task.priority] ?? task.priority}
