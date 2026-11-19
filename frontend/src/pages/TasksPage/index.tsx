@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { tasksApi } from "../../api/tasks";
+import { useTasks } from "../../api/useTasks";
 import type { Task, TaskCreate } from "../../types/tasks";
 import { AppLayout } from "../../layouts/AppLayout";
 import { Button } from "../../components/Button";
@@ -18,36 +19,24 @@ type ModalState =
   | { type: "delete"; task: Task };
 
 export function TasksPage() {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [modal, setModal] = useState<ModalState>({ type: "none" });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const loadTasks = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await tasksApi.list();
-      setTasks(data);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Не удалось загрузить задачи");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    void loadTasks();
-  }, [loadTasks]);
+  const {
+    data: tasks = [],
+    isLoading,
+    // isError,
+    refetch,
+  } = useTasks();
 
   const closeModal = () => setModal({ type: "none" });
 
   const handleCreate = async (data: TaskCreate) => {
     setIsSubmitting(true);
     try {
-      const created = await tasksApi.create(data);
-      setTasks((prev) => [created, ...prev]);
+      await tasksApi.create(data);
+      refetch();
       closeModal();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Не удалось создать задачу");
@@ -59,8 +48,8 @@ export function TasksPage() {
   const handleUpdate = async (id: number, data: TaskCreate) => {
     setIsSubmitting(true);
     try {
-      const updated = await tasksApi.update(id, data);
-      setTasks((prev) => prev.map((t) => (t.id === id ? updated : t)));
+      await tasksApi.update(id, data);
+      refetch();
       closeModal();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Не удалось обновить задачу");
@@ -70,15 +59,11 @@ export function TasksPage() {
   };
 
   const handleToggle = async (task: Task) => {
-    const snapshot = tasks;
-    setTasks((list) =>
-      list.map((t) => (t.id === task.id ? { ...t, done: !t.done } : t))
-    );
     try {
-      const updated = await tasksApi.update(task.id, { done: !task.done });
-      setTasks((list) => list.map((t) => (t.id === task.id ? updated : t)));
+      await tasksApi.update(task.id, { done: !task.done });
+      refetch();
     } catch (e) {
-      setTasks(snapshot);
+      refetch();
       setError(e instanceof Error ? e.message : "Не удалось изменить статус");
     }
   };
@@ -87,7 +72,7 @@ export function TasksPage() {
     setIsSubmitting(true);
     try {
       await tasksApi.remove(task.id);
-      setTasks((prev) => prev.filter((t) => t.id !== task.id));
+      refetch();
       closeModal();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Не удалось удалить задачу");
@@ -126,9 +111,9 @@ export function TasksPage() {
         </div>
       </div>
 
-      {error && <ErrorBanner message={error} onRetry={loadTasks} />}
+      {error && <ErrorBanner message={error} onRetry={refetch} />}
 
-      {loading ? (
+      {isLoading ? (
         <Spinner />
       ) : tasks.length === 0 ? (
         <EmptyState

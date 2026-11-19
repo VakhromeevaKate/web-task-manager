@@ -13,3 +13,7 @@
 
 # Только production-стек
 `docker compose --profile prod up --build frontend`
+
+# Если добавили новую библиотеку, и рассинхронизировалась node_modules в контейнере и проекте:
+`docker compose down frontend-dev`
+`docker compose up --build -V frontend-dev`
